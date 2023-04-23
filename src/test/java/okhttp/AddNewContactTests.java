@@ -44,6 +44,32 @@ public class AddNewContactTests {
 
     }
     @Test
+    public void addNewContact1Tests() throws IOException {
+
+        ContactDto contactDto= ContactDto.builder()
+                .name("Ann")
+                .lastName("Voor")
+                .email("kana@gmail.co")
+                .phone("12345678901")
+                .address("Keln")
+                .description("dert")
+                .build();
+        RequestBody body= RequestBody.create(gson.toJson(contactDto), JSON);
+
+        Request request = new Request.Builder()
+                .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        Assert.assertTrue(response.isSuccessful());
+        Assert.assertEquals(response.code(),200);
+        ContactResponseDto resDto= gson.fromJson(response.body().string(), ContactResponseDto.class);
+        System.out.println(resDto.getMessage());
+
+    }
+    @Test
     public void addNewContactNegativeTests() throws IOException {
         int i=new Random().nextInt(1000)+1000;
         ContactDto contactDto= ContactDto.builder()
@@ -97,5 +123,31 @@ public class AddNewContactTests {
         ErrorDto errorDto = gson.fromJson(response.body().string(), ErrorDto.class);
         Assert.assertEquals(errorDto.getError(),"Unauthorized");
     }
+    @Test
+    public void addNewContactDublicateNegativeTest() throws IOException {
+        ContactDto contactDto= ContactDto.builder()
+                .name("Ann")
+                .lastName("Voor")
+                .email("kana@gmail.co")
+                .phone("12345678901")
+                .address("Keln")
+                .description("dert")
+                .build();
+        RequestBody body= RequestBody.create(gson.toJson(contactDto), JSON);
 
+        Request request = new Request.Builder()
+                .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+
+        Response response = client.newCall(request).execute();
+       //Assert.assertFalse(response.isSuccessful());
+        //Assert.assertEquals(response.code(), 409);
+
+        ErrorDto errorDto = gson.fromJson(response.body().string(), ErrorDto.class);
+        System.out.println(errorDto.getMessage());
+        //Assert.assertEquals(errorDto.getError(),"Unauthorized");
+    }
 }
