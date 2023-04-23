@@ -1,0 +1,17 @@
+.gradle/
+#/build/
+
+
+setting.gradle
+.idea
+out/
+.DS_Store
+*.bat
+gradlew
+gradlew/
+!gradle-wrapper.jar
+*.jar
+*.properties
+*.iml
+
+.gradletasknamecache
